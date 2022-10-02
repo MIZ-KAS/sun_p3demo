@@ -78,3 +78,36 @@ stages:
             environmentServiceName: 'service-connection-azurerm'
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environment/test'
             allowTelemetryCollection: true
+
+  - stage: Build
+    jobs:
+      - job: Build_Artifacts
+        displayName: Build Artifacts
+        pool: Default
+        steps:
+          - task: ArchiveFiles@2
+            displayName: Archive Fakerestapi
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter/fakerestapi'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+          
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Fakerestapi as Artifact
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/fakerestapi-$(Build.BuildId).zip'
+              artifactName: 'drop-fakerestapi'
+              
+          - task: ArchiveFiles@2
+            displayName: Archive Selenium
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Selenium Artifact
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
+              artifactName: 'drop-selenium'
