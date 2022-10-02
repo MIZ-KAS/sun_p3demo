@@ -116,7 +116,7 @@ stages:
     jobs:
       - deployment: deploy_fakerestapi
         displayName: Deploy FakeRestAPI
-        pool: myAgent
+        pool: Default
         environment: 'TEST'
         strategy:
           runOnce:
