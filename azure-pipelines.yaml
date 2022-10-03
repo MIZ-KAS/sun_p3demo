@@ -259,7 +259,7 @@ stages:
             displayName: Install JMeter
           - bash: |
               #apache-jmeter-5.5/bin/jmeter -n -t automatedtesting/jmeter/stress.jmx \
-              apache-jmeter-5.5/bin/jmeter -n -t stress.jmx \
+              apache-jmeter-5.5/bin/jmeter -n -t automatedtesting/jmeter/stress.jmx \
                                           -l log/jmeter/stress-test-result.csv \
                                           -e -f -o log/jmeter \
                                           -j log/jmeter/jmeter-stress-test.log
