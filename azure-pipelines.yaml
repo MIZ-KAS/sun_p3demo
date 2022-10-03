@@ -8,7 +8,7 @@ stages:
     jobs:
       - job: TerrafromTasks
         displayName: Terraform Tasks
-        pool: Default
+        pool: myAgentPool
         steps:
         - task: DownloadSecureFile@1
           displayName: Download azsecret.conf file
@@ -40,7 +40,7 @@ stages:
             backendType: 'azurerm'
             backendServiceArm: 'service-connection-azurerm'
             backendAzureRmResourceGroupName: 'Azuredevops'
-            backendAzureRmStorageAccountName: 'tfstate5435'
+            backendAzureRmStorageAccountName: 'tfstate22723'
             backendAzureRmContainerName: 'tfstate'
             allowTelemetryCollection: true
           
@@ -83,7 +83,7 @@ stages:
     jobs:
       - job: Build_Artifacts
         displayName: Build Artifacts
-        pool: Default
+        pool: myAgentPool
         steps:
           - task: ArchiveFiles@2
             displayName: Archive Fakerestapi
@@ -116,7 +116,7 @@ stages:
     jobs:
       - deployment: deploy_fakerestapi
         displayName: Deploy FakeRestAPI
-        pool: Default
+        pool: myAgentPool
         environment: 'TEST'
         strategy:
           runOnce:
