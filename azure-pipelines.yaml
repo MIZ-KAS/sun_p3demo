@@ -154,8 +154,8 @@ stages:
                     AZURE_LOG_ANALYTICS_ID: $(la_workspace_id)
                     AZURE_LOG_ANALYTICS_PRIMARY_KEY: $(la_primary_key)
                   displayName: Configure VM  
-
-- stage: Test
+                
+  - stage: Test
     jobs:
     - job: IntegrationTests
       displayName: Integration Tests For UI and Selenium
