@@ -112,6 +112,20 @@ stages:
               targetPath: '$(Build.ArtifactStagingDirectory)/selenium-$(Build.BuildId).zip'
               artifactName: 'drop-selenium'
 
+          - task: ArchiveFiles@2
+            displayName: 'Archive PerformanceTestSuite'
+            inputs:
+              rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/jmeter'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/jtest-$(Build.BuildId).zip'
+          - task: PublishBuildArtifacts@1
+            displayName: Publish Jmeter test
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/jtest-$(Build.BuildId).zip'
+              ArtifactName: 'drop-jtest'
+
+
   - stage: Deploy 
     jobs:
       - deployment: deploy_fakerestapi
@@ -239,23 +253,38 @@ stages:
       pool: myAgentPool
       steps:
           - bash: |
+              echo  '$(System.DefaultWorkingDirectory)'
+              ls -al
+              pwd
+              unzip -o $(Pipeline.Workspace)/drop-jtest/jtest-$(Build.BuildId).zip -d .
               sudo apt-get install openjdk-11-jre-headless -y
               java -version
               wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.tgz -O jmeter.tgz
               tar xzvf jmeter.tgz
               mkdir -p log/jmeter
-              pwd
-              ls -la  
+              # if [ ! -d /var/log/jmeter ]; then
+              #         sudo mkdir /var/log/jmeter
+              #         sudo chmod 777 /var/log/jmeter
+              # fi
+              # if [ ! -d /var/log/jmeter/endurance_test_report ]; then
+              #         sudo mkdir /var/log/jmeter/stress_test_report
+              #         sudo chmod 777 /var/log/jmeter/stress_test_report
+              # fi  
+              # if [ ! -d /var/log/jmeter/endurance_test_report ]; then
+              #         sudo mkdir /var/log/jmeter/endurance_test_report
+              #         sudo chmod 777 /var/log/jmeter/endurance_test_report
+              # fi  
+              ls -la
+              pwd  
             displayName: Install JMeter
           - bash: |
-              #apache-jmeter-5.5/bin/jmeter -n -t automatedtesting/jmeter/stress.jmx \
-              apache-jmeter-5.5/bin/jmeter -n -t automatedtesting/jmeter/stress.jmx \
+              apache-jmeter-5.5/bin/jmeter -n -t stress.jmx \
                                           -l log/jmeter/stress-test-result.csv \
                                           -e -f -o log/jmeter \
                                           -j log/jmeter/jmeter-stress-test.log
             displayName: JMeter Stress Test
           - bash: |
-              apache-jmeter-5.5/bin/jmeter -n -t automatedtesting/jmeter/endurance.jmx \
+              apache-jmeter-5.5/bin/jmeter -n -t endurance.jmx \
                                           -l log/jmeter/endurance-test-result.csv \
                                           -e -f -o log/jmeter \
                                           -j log/jmeter/jmeter-endurance-test.log
